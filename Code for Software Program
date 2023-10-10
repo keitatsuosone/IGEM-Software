@@ -1,0 +1,19 @@
+from PIL import Image
+
+def calculate_mean_gray_value(input_image_path):
+    # Open the input image
+    input_image = Image.open(input_image_path)
+    
+    # Convert the image to grayscale (L mode)
+    grayscale_image = input_image.convert("L")
+    
+    # Calculate the mean gray value
+    pixel_values = list(grayscale_image.getdata())
+    mean_gray_value = sum(pixel_values) / len(pixel_values)
+    
+    return mean_gray_value
+
+# Example usage
+input_image_path = "input.jpg"  # Replace with the path to your input image file
+mean_gray_value = calculate_mean_gray_value(input_image_path)
+print("Mean Gray Value:", mean_gray_value)
