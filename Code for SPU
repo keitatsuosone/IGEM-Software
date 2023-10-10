@@ -1,0 +1,51 @@
+// PID Constants
+double Kp = 1;  // Proportional constant
+double Ki = 0.1; // Integral constant
+double Kd = 0.01; // Derivative constant
+
+// PID Variables
+double setpoint = 25.0; // Target temperature in degrees Celsius
+double input, output, error, lastError = 0;
+double integral = 0;
+
+// Pin configurations
+const int temperaturePin = A0; // Analog pin for temperature sensor
+const int heaterPin = 9; // PWM pin for the heater
+
+void setup() {
+  // Initialize Serial Monitor
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Read temperature from sensor
+  int sensorValue = analogRead(temperaturePin);
+  input = sensorValue * 0.48828125; // Convert analog reading to degrees Celsius
+
+  // Calculate error
+  error = setpoint - input;
+
+  // Calculate integral term (accumulated error)
+  integral += error;
+
+  // Calculate derivative term (rate of change of error)
+  double derivative = error - lastError;
+
+  // Calculate PID output
+  output = Kp * error + Ki * integral + Kd * derivative;
+
+  // Apply PID output to control the heater using PWM
+  int pwmValue = constrain(output, 0, 255); // Ensure PWM value is within 0-255 range
+  analogWrite(heaterPin, pwmValue);
+
+  // Print values to Serial Monitor
+  Serial.print("Temperature: ");
+  Serial.print(input);
+  Serial.print(" | Setpoint: ");
+  Serial.print(setpoint);
+  Serial.print(" | PWM Value: ");
+  Serial.println(pwmValue);
+
+  // Delay for a short interval
+  delay(1000); // Adjust the delay time as needed
+}
